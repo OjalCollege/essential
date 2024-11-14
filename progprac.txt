@@ -1,0 +1,65 @@
+
+pragma solidity ^0.8.0;
+contract Bank {
+    address public accHolder;
+    uint256 balance = 0;
+
+    constructor() {
+        accHolder = msg.sender;
+    }
+
+    // function withdraw() payable public {
+    //     require(balance > 0, "You don't have enough balance.");
+    //     require(msg.sender == accHolder, "You are not the account owner.");
+    //     payable(msg.sender).transfer(balance); // SPDX-License-Identifier: UNLICENCED
+    //     balance = 0;
+    // }
+     function withdraw() public payable{
+        require(msg.value<balance,"insuffiecent balance");
+        balance=balance-msg.value;
+    }
+
+
+    function deposit() public payable {
+        require(msg.value > 0, "Deposit amount should be greater than 0.");
+        require(msg.sender == accHolder, "You are not the account owner.");
+        balance += msg.value;
+    }
+
+    function showBalance() public view returns(uint) {
+        require(msg.sender == accHolder, "You are not the account owner.");
+        return balance;
+    }
+}
+
+  // SPDX-License-Identifier: UNLICENCED
+pragma solidity ^0.8.0;
+
+contract StudentData {
+    // Structure to represent a student
+    struct Student {
+        string name;
+        uint age;
+    }
+
+    // Array to store all students
+    Student[] public studentsList;
+
+    // Function to add a new student
+    function addStudent(string memory _name, uint _age) public {
+        studentsList.push(Student(_name, _age));
+    }
+
+    // Function to get a student's details by index
+    function getStudentDetails(uint _index) public view returns (string memory, uint) {
+        require(_index < studentsList.length, "Student not found");
+        Student memory student = studentsList[_index];
+        return (student.name, student.age);
+    }
+
+    // Fallback function to accept Ether
+    fallback() external payable {}
+
+    // Receive function to accept Ether
+    receive() external payable {}
+}
